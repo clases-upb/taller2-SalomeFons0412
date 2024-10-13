@@ -88,12 +88,12 @@ public class App {
             if (consumo <= 0) {
                 return "Error calculando consumo";
             }
-    
             float propina = consumo * 0.10f;
             float impoconsumo = consumo * 0.08f;
             float total = consumo + propina + impoconsumo;
     
-            return String.format( "valor comida: $%.2f - valor propina $%.2f - valor impoconsumo $%.2f - total a pagar $%.2f",
+            // Usar %.1f para mostrar un decimal
+            return String.format("valor comida: $%.1f - valor propina $%.1f - valor impoconsumo $%.1f - total a pagar $%.1f",
                     consumo, propina, impoconsumo, total);
         } catch (Exception e) {
             return "Error en la función Calcular_tip";
@@ -177,23 +177,55 @@ public class App {
      * nota que deberá sacar para ganar si el puntaje mínimo es 3. Si algo
      * está mal con los porcentajes o con las notas, retorne -1.
      */
-    public static float Calcular_para_ganar(float p1, float p2, float p3, float p4, float p5, float n1, float n2, float n3, float n4) {
+    public float Calcular_para_ganar(float nota1, float nota2, float nota3, float nota4, float p1, float p2, float p3, float p4, float p5) {
         try {
-            if (p1 + p2 + p3 + p4 + p5 != 1 || p1 < 0 || p1 > 1 || p2 < 0 || p2 > 1 || p3 < 0 || p3 > 1 || p4 < 0 || p4 > 1 || p5 < 0 || p5 > 1) {
-                throw new Exception("Los porcentajes deben sumar 1 y estar entre 0 y 1");
-            }
-            if (n1 < 0 || n1 > 5 || n2 < 0 || n2 > 5 || n3 < 0 || n3 > 5 || n4 < 0 || n4 > 5) {
-                throw new Exception("Las notas deben estar entre 0 y 5");
-            }
-            float sum = n1 * p1 + n2 * p2 + n3 * p3 + n4 * p4;
-            float min_note = (3 - sum) / p5;
-            return min_note;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return -1;
-        }
+             
+        final float MIN_PUNTUACION = (float)3.0;
+        final float RANGO_MINIMO = (float)0.0;
+        final float RANGO_MAXIMO_NOTA = (float)5.0;
+        final float RANGO_MAXIMO_PORCENTAJE = (float)1.0;
+
+        if (p1 < RANGO_MINIMO || p1 > RANGO_MAXIMO_PORCENTAJE || 
+        p2 < RANGO_MINIMO || p2 > RANGO_MAXIMO_PORCENTAJE || 
+        p3 < RANGO_MINIMO || p3 > RANGO_MAXIMO_PORCENTAJE || 
+        p4 < RANGO_MINIMO || p4 > RANGO_MAXIMO_PORCENTAJE || 
+        p5 < RANGO_MINIMO || p5 > RANGO_MAXIMO_PORCENTAJE) {
+        return -1; 
     }
+
+   
+    if ((p1 + p2 + p3 + p4 + p5) != 1) {
+        return -1; 
+    }
+
+  
+    if (nota1 < RANGO_MINIMO || nota1 > RANGO_MAXIMO_NOTA || 
+        nota2 < RANGO_MINIMO || nota2 > RANGO_MAXIMO_NOTA || 
+        nota3 < RANGO_MINIMO || nota3 > RANGO_MAXIMO_NOTA || 
+        nota4 < RANGO_MINIMO || nota4 > RANGO_MAXIMO_NOTA) {
+        return -1; 
+    }
+
     
+    float sumaNotasPonderadas = (nota1 * p1) +(nota2 * p2) + (nota3 * p3) +(nota4 * p4);
+
+    
+    float notaNecesaria = (MIN_PUNTUACION - sumaNotasPonderadas) / p5;
+
+    
+    if (notaNecesaria < RANGO_MINIMO) {
+        return -1;
+    }
+    return notaNecesaria; 
+
+} catch (Exception e) {
+    return -1;
+
+}
+
+    }
+
+
     /*
      * 6. Diseñe un algoritmo e implemente la función Calcular_salario que
      * reciba cuatro enteros: cantidad de horas normales laboradas, cantidad
